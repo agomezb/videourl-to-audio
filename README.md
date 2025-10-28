@@ -2,6 +2,25 @@
 
 A simple Python console application to download audio from video URLs.
 
+# TL;DR Usage with Docker
+
+Download audio from a video URL:
+```bash
+docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4"
+```
+
+Specify custom output filename:
+```bash
+docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4" --output my_audio
+```
+
+Download video file in addition to audio:
+```bash
+docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4" --download-video
+```
+
+
+
 ## Requirements
 
 - Python 3.8+
