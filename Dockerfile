@@ -14,10 +14,13 @@ WORKDIR /app
 
 # Copy project files
 COPY pyproject.toml .
-COPY main.py .
 
 # Install dependencies
-RUN uv pip install --system -e .
+RUN uv pip install --system typer yt-dlp
+
+# Copy application files
+COPY main.py .
+COPY downloader.py .
 
 # Set entrypoint
 ENTRYPOINT ["python", "main.py"]
