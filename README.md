@@ -14,22 +14,22 @@ A simple Python console application to download audio from video URLs. Supports 
 
 Download audio from a video URL:
 ```bash
-docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4"
+docker run --rm -v $(pwd):/output ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4"
 ```
 
 Batch process multiple videos from CSV:
 ```bash
-docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest --csv sample_videos.csv
+docker run --rm -v $(pwd):/output ghcr.io/agomezb/videourl-to-audio:latest --csv /output/sample_videos.csv
 ```
 
 Specify custom output filename:
 ```bash
-docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4" --output my_audio
+docker run --rm -v $(pwd):/output ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4" --output my_audio
 ```
 
 Download video file in addition to audio:
 ```bash
-docker run -v $(pwd):/app ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4" --download-video
+docker run --rm -v $(pwd):/output ghcr.io/agomezb/videourl-to-audio:latest "https://example.com/video.mp4" --download-video
 ```
 
 
@@ -108,18 +108,20 @@ docker build -t videourl-to-audio .
 
 Run single download:
 ```bash
-docker run -v $(pwd):/app videourl-to-audio "https://example.com/video.mp4"
+docker run -v $(pwd):/output videourl-to-audio "https://example.com/video.mp4"
 ```
 
-Run batch processing:
+Run batch processing (CSV must be in current directory):
 ```bash
-docker run -v $(pwd):/app videourl-to-audio --csv sample_videos.csv
+docker run -v $(pwd):/output videourl-to-audio --csv /output/sample_videos.csv
 ```
 
 With options:
 ```bash
-docker run -v $(pwd):/app videourl-to-audio "https://example.com/video.mp4" --output my_audio --download-video
+docker run -v $(pwd):/output videourl-to-audio "https://example.com/video.mp4" --output my_audio --download-video
 ```
+
+**Note:** The `-v $(pwd):/output` mounts your current directory to `/output` in the container where files will be saved. For CSV batch processing, place your CSV file in the current directory and reference it as `/output/filename.csv`.
 
 ## Project Structure
 
