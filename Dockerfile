@@ -1,28 +1,39 @@
-FROM python:3.11-slim
-
-# Install FFmpeg
-RUN apt-get update && \
-    apt-get install -y ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+# Builder stage
+FROM python:3.11-slim AS builder
 
 # Install uv
 RUN pip install uv
 
-# Set working directory for app
+# Set working directory
 WORKDIR /app
 
 # Copy project files
 COPY pyproject.toml .
 
-# Install dependencies
-RUN uv pip install --system typer yt-dlp
+# Install dependencies into a virtual environment
+RUN uv venv /app/.venv && \
+    uv pip install --system typer yt-dlp
+
+# Final stage
+FROM python:3.11-slim
+
+# Copy ffmpeg from static image
+COPY --from=mwader/static-ffmpeg:6.1.1 /ffmpeg /usr/local/bin/
+COPY --from=mwader/static-ffmpeg:6.1.1 /ffprobe /usr/local/bin/
+
+# Copy python dependencies from builder
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --from=builder /usr/local/bin/yt-dlp /usr/local/bin/yt-dlp
+COPY --from=builder /usr/local/bin/typer /usr/local/bin/typer
+
+# Set working directory
+WORKDIR /app
 
 # Copy application files
 COPY main.py .
 COPY downloader.py .
 
-# Create output directory and set it as working directory
+# Create output directory
 WORKDIR /output
 
 # Set entrypoint
